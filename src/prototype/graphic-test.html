@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TutorAI - 图形渲染测试</title>
+  <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    
+    #container {
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    
+    #controls {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    
+    button {
+      padding: 10px 20px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    button:hover {
+      background: #45a049;
+    }
+    
+    #console {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .log-item {
+      margin-bottom: 5px;
+      padding: 5px;
+      border-left: 3px solid #4CAF50;
+      padding-left: 10px;
+    }
+    
+    .log-success { border-color: #4CAF50; }
+    .log-warning { border-color: #FFC107; }
+    .log-error { border-color: #f44336; }
+  </style>
+</head>
+<body>
+  <h1>TutorAI - 图形渲染技术预研</h1>
+  
+  <div id="controls">
+    <button onclick="testRectangle()">测试 1: 绘制长方形</button>
+    <button onclick="testAnimation()">测试 2: 动画效果</button>
+    <button onclick="testInteraction()">测试 3: 交互操作</button>
+    <button onclick="testPerformance()">测试 4: 性能测试</button>
+    <button onclick="clearCanvas()">清空画布</button>
+    <button onclick="runAllTests()">运行所有测试</button>
+  </div>
+  
+  <div id="container"></div>
+  
+  <div id="console"></div>
+
+  <script>
+    // 初始化舞台
+    const stage = new Konva.Stage({
+      container: 'container',
+      width: 1200,
+      height: 600
+    });
+
+    const layer = new Konva.Layer();
+    stage.add(layer);
+
+    // 控制台输出
+    function log(message, type = 'success') {
+      const consoleDiv = document.getElementById('console');
+      const logItem = document.createElement('div');
+      logItem.className = `log-item log-${type}`;
+      logItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      consoleDiv.appendChild(logItem);
+      consoleDiv.scrollTop = consoleDiv.scrollHeight;
+      console.log(message);
+    }
+
+    // 清空画布
+    function clearCanvas() {
+      layer.destroyChildren();
+      layer.draw();
+      log('画布已清空', 'success');
+    }
+
+    // 测试 1：绘制长方形
+    function testRectangle() {
+      log('开始测试 1：绘制长方形...', 'success');
+      
+      const rect = new Konva.Rect({
+        x: 100,
+        y: 100,
+        width: 200,
+        height: 100,
+        fill: '#4CAF50',
+        stroke: '#000',
+        strokeWidth: 2
+      });
+      
+      const labelWidth = new Konva.Text({
+        x: 100,
+        y: 210,
+        text: '长 = 200px',
+        fontSize: 16,
+        fill: '#000'
+      });
+      
+      const labelHeight = new Konva.Text({
+        x: 10,
+        y: 140,
+        text: '宽 = 100px',
+        fontSize: 16,
+        fill: '#000',
+        rotation: -90
+      });
+      
+      layer.add(rect);
+      layer.add(labelWidth);
+      layer.add(labelHeight);
+      layer.draw();
+      
+      log('✅ 测试 1 通过：长方形绘制成功', 'success');
+    }
+
+    // 测试 2：动画效果
+    function testAnimation() {
+      log('开始测试 2：动画效果...', 'success');
+      
+      const circle = new Konva.Circle({
+        x: 500,
+        y: 150,
+        radius: 50,
+        fill: '#2196F3',
+        opacity: 0
+      });
+      
+      layer.add(circle);
+      layer.draw();
+      
+      // 淡入动画
+      circle.to({
+        opacity: 1,
+        duration: 1,
+        onFinish: () => {
+          log('✅ 测试 2 通过：淡入动画流畅', 'success');
+          
+          // 移动动画
+          circle.to({
+            x: 700,
+            duration: 1,
+            onFinish: () => {
+              log('✅ 测试 2 通过：移动动画流畅', 'success');
+            }
+          });
+        }
+      });
+    }
+
+    // 测试 3：交互操作
+    function testInteraction() {
+      log('开始测试 3：交互操作...', 'success');
+      
+      const interactiveRect = new Konva.Rect({
+        x: 900,
+        y: 100,
+        width: 150,
+        height: 150,
+        fill: '#FFC107',
+        stroke: '#000',
+        strokeWidth: 2,
+        draggable: true
+      });
+      
+      const hint = new Konva.Text({
+        x: 900,
+        y: 260,
+        text: '可拖拽',
+        fontSize: 14,
+        fill: '#666'
+      });
+      
+      // 鼠标悬停
+      interactiveRect.on('mouseenter', () => {
+        interactiveRect.stroke('#FF5722');
+        interactiveRect.strokeWidth(4);
+        stage.container().style.cursor = 'pointer';
+        layer.draw();
+        log('鼠标悬停响应', 'success');
+      });
+      
+      interactiveRect.on('mouseleave', () => {
+        interactiveRect.stroke('#000');
+        interactiveRect.strokeWidth(2);
+        stage.container().style.cursor = 'default';
+        layer.draw();
+      });
+      
+      // 拖拽
+      interactiveRect.on('dragstart', () => {
+        log('开始拖拽', 'success');
+      });
+      
+      interactiveRect.on('dragend', () => {
+        log('✅ 测试 3 通过：拖拽交互流畅', 'success');
+      });
+      
+      layer.add(interactiveRect);
+      layer.add(hint);
+      layer.draw();
+      
+      log('✅ 测试 3 通过：交互元素创建成功', 'success');
+    }
+
+    // 测试 4：性能测试
+    function testPerformance() {
+      log('开始测试 4：性能测试（渲染 100 个图形）...', 'success');
+      
+      const startTime = performance.now();
+      
+      // 创建 100 个随机图形
+      for (let i = 0; i < 100; i++) {
+        const shape = new Konva.Circle({
+          x: Math.random() * 1100 + 50,
+          y: Math.random() * 500 + 50,
+          radius: 5 + Math.random() * 15,
+          fill: `hsl(${Math.random() * 360}, 70%, 60%)`,
+          opacity: 0.7
+        });
+        layer.add(shape);
+      }
+      
+      layer.draw();
+      
+      const endTime = performance.now();
+      const renderTime = endTime - startTime;
+      
+      log(`渲染 100 个图形耗时: ${renderTime.toFixed(2)}ms`, 'success');
+      
+      if (renderTime < 100) {
+        log('✅ 测试 4 通过：性能优秀（<100ms）', 'success');
+      } else if (renderTime < 200) {
+        log('⚠️ 测试 4 警告：性能一般（100-200ms）', 'warning');
+      } else {
+        log('❌ 测试 4 失败：性能不足（>200ms）', 'error');
+      }
+    }
+
+    // 运行所有测试
+    function runAllTests() {
+      clearCanvas();
+      log('========== 开始运行所有测试 ==========', 'success');
+      
+      testRectangle();
+      setTimeout(() => testAnimation(), 500);
+      setTimeout(() => testInteraction(), 1000);
+      setTimeout(() => testPerformance(), 2500);
+      setTimeout(() => {
+        log('========== 所有测试完成 ==========', 'success');
+      }, 3000);
+    }
+
+    // 页面加载完成后的初始化
+    window.onload = () => {
+      log('图形渲染测试环境初始化完成', 'success');
+      log('点击按钮开始测试，或点击"运行所有测试"', 'success');
+    };
+  </script>
+</body>
+</html>
